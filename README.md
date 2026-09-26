@@ -1,0 +1,105 @@
+# App móvil CO2 – Emisiones de dióxido de carbono por país
+
+Aplicación móvil desarrollada con **React Native + Expo** bajo la metodología de Aprendizaje Basado en Proyectos (ABP). Consume datos reales de la **API del Banco Mundial** y los gestiona con **TanStack Query**.
+
+> Este es un proyecto independiente y paralelo. No modifica ni depende del proyecto grupal del Recetario Argentino.
+
+## Descripción
+
+La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cada país, con su último dato disponible, y permite entrar al detalle de un país para ver su evolución histórica año por año.
+
+- **Indicador:** `EN.GHG.CO2.PC.CE.AR5` – emisiones de CO2 excluyendo uso del suelo (LULUCF), per cápita.
+- **API:** `https://api.worldbank.org/v2/country/all/indicator/EN.GHG.CO2.PC.CE.AR5`
+- Se usa `mrnev=1` (valor más reciente no vacío) para el listado y se descartan los agregados regionales (por ejemplo "Arab World") cruzando con el listado de países.
+- Las banderas se obtienen de [flagcdn.com](https://flagcdn.com).
+
+## Integrantes
+
+| Integrante | Rol |
+|---|---|
+| Germán Cochis | Estructura base, integración con la API y TanStack Query |
+
+> Los demás integrantes se irán sumando a medida que el proyecto avance.
+
+## Features
+
+### Implementadas
+
+| # | Feature | Detalle |
+|---|---|---|
+| 1 | Listado de países | Tarjetas `PaisCard` con bandera, nombre, región y última emisión per cápita. |
+| 2 | Detalle de país | Datos del país y serie histórica anual con barras (`BarraSerie`). |
+| 3 | Consumo de la API con TanStack Query | Hooks `usePaisesEmisiones` y `useSerieHistorica`, con caché de un día y reintentos. |
+| 4 | Estados de carga y error | `EstadoCargando` y `EstadoError` con botón "Reintentar". |
+| 5 | Actualizar deslizando | Pull to refresh en el listado (`refetch`). |
+
+### Pendientes
+
+| # | Feature | Detalle |
+|---|---|---|
+| 1 | Búsqueda por nombre de país | Filtrar el listado escribiendo el nombre. |
+| 2 | Filtro por región | Latin America & Caribbean, Europe & Central Asia, etc. |
+| 3 | Ordenar por emisión | Mayor a menor y viceversa. |
+| 4 | Favoritos | Marcar países y ver solo los favoritos. |
+| 5 | Comparar países | Ver la serie de dos países juntos. |
+| 6 | Gráfico de línea | Reemplazar las barras por un gráfico de evolución. |
+| 7 | Navegación con pestañas | Inicio, favoritos y comparación. |
+| 8 | Pruebas | Tests de servicio, hooks y componentes. |
+
+## Tecnologías
+
+- Expo y React Native (SDK 57)
+- Expo Router (navegación basada en archivos)
+- TypeScript
+- TanStack Query (`@tanstack/react-query`)
+- expo-image
+
+## Estructura del proyecto
+
+```
+src/
+├── app/                  Rutas (Expo Router)
+│   ├── _layout.tsx       Layout raíz y QueryClientProvider
+│   ├── index.tsx         Listado de países
+│   └── pais/[codigo].tsx Detalle de un país
+├── components/           Componentes reutilizables (PaisCard, BarraSerie, EstadoConsulta)
+├── hooks/                Hooks de TanStack Query (useEmisiones)
+├── services/             Llamadas a la API del Banco Mundial
+├── types/                Tipos de dominio
+├── constants/            Tema de colores y espaciado
+└── utils/                Formato de números y URL de banderas
+```
+
+## Cómo ejecutar
+
+```bash
+npm install
+npx expo start
+```
+
+Presionar `w` para abrir en el navegador, o escanear el QR con la app Expo Go.
+
+## Flujo de trabajo y trazabilidad
+
+Cada funcionalidad se desarrolla en su propia rama, con commits en español que explican qué se hizo, y se integra a `main` con un merge que conserva el historial (`--no-ff`).
+
+**Convención de ramas:** `feature/<descripcion>` para funcionalidades y `docs/<descripcion>` para documentación.
+
+| Orden | Rama | Contenido |
+|---|---|---|
+| 1 | `main` | Commit inicial con la plantilla base de Expo y TypeScript. |
+| 2 | `feature/enrutado-expo-router` | Expo Router, carpetas en `src`, tema y layout raíz. |
+| 3 | `feature/tanstack-query-api-banco-mundial` | TanStack Query, servicio de la API, tipos y hooks. |
+| 4 | `feature/listado-paises-pais-card` | Componente `PaisCard`, estados de consulta y listado. |
+| 5 | `feature/detalle-pais-serie-historica` | Pantalla de detalle con `ScrollView` y `BarraSerie`. |
+| 6 | `docs/readme-y-trazabilidad` | Este README. |
+
+Para ver el historial completo con las ramas:
+
+```bash
+git log --graph --oneline --all
+```
+
+## Licencia
+
+MIT
