@@ -36,6 +36,7 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 | 7 | Filtro por región | `FiltroRegiones` con chips; se combina con la búsqueda. |
 | 8 | Ordenar por emisión | `SelectorOrden`: A-Z, más emisión o menos emisión. |
 | 9 | Favoritos | `BotonFavorito` en el listado y el detalle, filtro "Ver solo favoritos" y persistencia con AsyncStorage. |
+| 10 | Despliegue web en Vercel | `vercel.json` con el build de Expo para web: https://app-movil-co-2.vercel.app |
 
 ### Pendientes
 
@@ -123,6 +124,7 @@ Los commits van en español y explican qué se hizo. Los merges conservan el his
 | 7 | `feature/busqueda-y-filtro-por-region` | Búsqueda por nombre y filtro por región. |
 | 8 | `feature/ordenar-por-emision` | Selector de orden: A-Z, más emisión, menos emisión. |
 | 9 | `feature/favoritos` | Favoritos con persistencia en AsyncStorage y filtro de solo favoritos. |
+| 10 | `feature/despliegue-vercel` | Configuración de Vercel (`vercel.json`) para publicar la versión web. |
 
 Desde la rama 7 en adelante las funcionalidades pasan por `develop` y luego se promueven a `main`.
 
