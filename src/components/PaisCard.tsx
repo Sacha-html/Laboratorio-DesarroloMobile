@@ -1,16 +1,19 @@
 import { Image } from 'expo-image';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { BotonFavorito } from '@/components/BotonFavorito';
 import { colores, espaciado } from '@/constants/tema';
 import type { PaisEmision } from '@/types/emisiones';
 import { formatearToneladas, urlBandera } from '@/utils/formato';
 
 interface PaisCardProps {
   pais: PaisEmision;
+  esFavorito: boolean;
+  onAlternarFavorito: () => void;
   onPress?: () => void;
 }
 
-export function PaisCard({ pais, onPress }: PaisCardProps) {
+export function PaisCard({ pais, esFavorito, onAlternarFavorito, onPress }: PaisCardProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -34,6 +37,7 @@ export function PaisCard({ pais, onPress }: PaisCardProps) {
         <Text style={estilos.valor}>{formatearToneladas(pais.valor)}</Text>
         <Text style={estilos.anio}>per cápita · {pais.anio}</Text>
       </View>
+      <BotonFavorito activo={esFavorito} onPress={onAlternarFavorito} />
     </Pressable>
   );
 }

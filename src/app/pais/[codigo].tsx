@@ -3,8 +3,10 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { BarraSerie } from '@/components/BarraSerie';
+import { BotonFavorito } from '@/components/BotonFavorito';
 import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
 import { colores, espaciado } from '@/constants/tema';
+import { useFavoritos } from '@/context/FavoritosContext';
 import { usePaisesEmisiones, useSerieHistorica } from '@/hooks/useEmisiones';
 import { formatearToneladas, urlBandera } from '@/utils/formato';
 
@@ -12,6 +14,7 @@ export default function DetallePais() {
   const { codigo } = useLocalSearchParams<{ codigo: string }>();
   const paises = usePaisesEmisiones();
   const serie = useSerieHistorica(codigo);
+  const { esFavorito, alternarFavorito } = useFavoritos();
 
   const pais = paises.data?.find((item) => item.codigoIso3 === codigo);
 
@@ -37,7 +40,13 @@ export default function DetallePais() {
             contentFit="cover"
             accessibilityLabel={`Bandera de ${pais.nombre}`}
           />
-          <Text style={estilos.nombre}>{pais.nombre}</Text>
+          <View style={estilos.filaNombre}>
+            <Text style={estilos.nombre}>{pais.nombre}</Text>
+            <BotonFavorito
+              activo={esFavorito(pais.codigoIso3)}
+              onPress={() => alternarFavorito(pais.codigoIso3)}
+            />
+          </View>
           <Text style={estilos.dato}>Región: {pais.region}</Text>
           {pais.capital !== '' && <Text style={estilos.dato}>Capital: {pais.capital}</Text>}
           <Text style={estilos.dato}>Nivel de ingreso: {pais.nivelIngreso}</Text>
@@ -64,7 +73,8 @@ const estilos = StyleSheet.create({
     marginBottom: espaciado.l,
   },
   bandera: { width: 120, height: 80, borderRadius: 6, marginBottom: espaciado.m, backgroundColor: colores.borde },
-  nombre: { fontSize: 24, fontWeight: '700', color: colores.texto, marginBottom: espaciado.s },
+  filaNombre: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: espaciado.s },
+  nombre: { fontSize: 24, fontWeight: '700', color: colores.texto },
   dato: { color: colores.textoSecundario, marginBottom: espaciado.xs },
   destacado: { marginTop: espaciado.s, fontSize: 18, fontWeight: '700', color: colores.primario },
   seccion: { fontSize: 18, fontWeight: '700', color: colores.texto, marginBottom: espaciado.m },
