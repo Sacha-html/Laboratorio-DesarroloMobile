@@ -6,6 +6,7 @@ import { BarraBusqueda } from '@/components/BarraBusqueda';
 import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
 import { FiltroRegiones } from '@/components/FiltroRegiones';
 import { PaisCard } from '@/components/PaisCard';
+import { type Orden, SelectorOrden } from '@/components/SelectorOrden';
 import { colores, espaciado } from '@/constants/tema';
 import { usePaisesEmisiones } from '@/hooks/useEmisiones';
 
@@ -21,6 +22,7 @@ export default function Inicio() {
   const router = useRouter();
   const [busqueda, setBusqueda] = useState('');
   const [region, setRegion] = useState<string | null>(null);
+  const [orden, setOrden] = useState<Orden>('nombre');
   const { data, isPending, isError, error, refetch, isRefetching } =
     usePaisesEmisiones();
 
@@ -31,12 +33,15 @@ export default function Inicio() {
 
   const paisesFiltrados = useMemo(() => {
     const termino = normalizar(busqueda);
-    return (data ?? []).filter(
+    const filtrados = (data ?? []).filter(
       (pais) =>
         (region === null || pais.region === region) &&
         normalizar(pais.nombre).includes(termino),
     );
-  }, [data, busqueda, region]);
+    if (orden === 'mayor') return filtrados.sort((a, b) => b.valor - a.valor);
+    if (orden === 'menor') return filtrados.sort((a, b) => a.valor - b.valor);
+    return filtrados;
+  }, [data, busqueda, region, orden]);
 
   if (isPending) {
     return <EstadoCargando mensaje="Cargando datos del Banco Mundial..." />;
@@ -59,6 +64,7 @@ export default function Inicio() {
           seleccionada={region}
           onSeleccionar={setRegion}
         />
+        <SelectorOrden orden={orden} onCambiar={setOrden} />
       </View>
       <FlatList
         data={paisesFiltrados}
