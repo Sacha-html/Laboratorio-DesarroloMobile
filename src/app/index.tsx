@@ -1,18 +1,45 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
+import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
+import { PaisCard } from '@/components/PaisCard';
 import { colores, espaciado } from '@/constants/tema';
+import { usePaisesEmisiones } from '@/hooks/useEmisiones';
 
 export default function Inicio() {
+  const { data, isPending, isError, error, refetch, isRefetching } =
+    usePaisesEmisiones();
+
+  if (isPending) {
+    return <EstadoCargando mensaje="Cargando datos del Banco Mundial..." />;
+  }
+
+  if (isError) {
+    return <EstadoError mensaje={error.message} onReintentar={refetch} />;
+  }
+
   return (
-    <View style={estilos.contenedor}>
-      <Text style={estilos.titulo}>Emisiones de CO2 per cápita</Text>
-      <Text style={estilos.subtitulo}>Datos del Banco Mundial</Text>
-    </View>
+    <FlatList
+      data={data}
+      keyExtractor={(pais) => pais.codigoIso3}
+      renderItem={({ item }) => <PaisCard pais={item} />}
+      contentContainerStyle={estilos.lista}
+      refreshing={isRefetching}
+      onRefresh={refetch}
+      ListHeaderComponent={
+        <View style={estilos.encabezado}>
+          <Text style={estilos.titulo}>Emisiones de CO2 per cápita</Text>
+          <Text style={estilos.subtitulo}>
+            {data.length} países · último dato disponible · Banco Mundial
+          </Text>
+        </View>
+      }
+    />
   );
 }
 
 const estilos = StyleSheet.create({
-  contenedor: { flex: 1, padding: espaciado.l, justifyContent: 'center' },
-  titulo: { fontSize: 24, fontWeight: '700', color: colores.texto },
-  subtitulo: { marginTop: espaciado.s, color: colores.textoSecundario },
+  lista: { padding: espaciado.m },
+  encabezado: { marginBottom: espaciado.m },
+  titulo: { fontSize: 22, fontWeight: '700', color: colores.texto },
+  subtitulo: { marginTop: espaciado.xs, color: colores.textoSecundario },
 });
