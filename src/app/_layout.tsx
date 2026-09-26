@@ -18,6 +18,7 @@ export default function LayoutRaiz() {
         }}
       >
         <Stack.Screen name="index" options={{ title: 'Emisiones de CO2' }} />
+        <Stack.Screen name="pais/[codigo]" options={{ title: 'Detalle del país' }} />
       </Stack>
     </QueryClientProvider>
   );

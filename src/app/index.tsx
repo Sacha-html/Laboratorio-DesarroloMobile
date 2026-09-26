@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
@@ -6,6 +7,7 @@ import { colores, espaciado } from '@/constants/tema';
 import { usePaisesEmisiones } from '@/hooks/useEmisiones';
 
 export default function Inicio() {
+  const router = useRouter();
   const { data, isPending, isError, error, refetch, isRefetching } =
     usePaisesEmisiones();
 
@@ -21,7 +23,12 @@ export default function Inicio() {
     <FlatList
       data={data}
       keyExtractor={(pais) => pais.codigoIso3}
-      renderItem={({ item }) => <PaisCard pais={item} />}
+      renderItem={({ item }) => (
+        <PaisCard
+          pais={item}
+          onPress={() => router.push(`/pais/${item.codigoIso3}`)}
+        />
+      )}
       contentContainerStyle={estilos.lista}
       refreshing={isRefetching}
       onRefresh={refetch}
