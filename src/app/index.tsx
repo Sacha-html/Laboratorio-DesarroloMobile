@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { BarraBusqueda } from '@/components/BarraBusqueda';
 import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
@@ -8,6 +8,7 @@ import { FiltroRegiones } from '@/components/FiltroRegiones';
 import { PaisCard } from '@/components/PaisCard';
 import { type Orden, SelectorOrden } from '@/components/SelectorOrden';
 import { colores, espaciado } from '@/constants/tema';
+import { useFavoritos } from '@/context/FavoritosContext';
 import { usePaisesEmisiones } from '@/hooks/useEmisiones';
 
 function normalizar(texto: string): string {
@@ -23,6 +24,8 @@ export default function Inicio() {
   const [busqueda, setBusqueda] = useState('');
   const [region, setRegion] = useState<string | null>(null);
   const [orden, setOrden] = useState<Orden>('nombre');
+  const [soloFavoritos, setSoloFavoritos] = useState(false);
+  const { esFavorito, alternarFavorito } = useFavoritos();
   const { data, isPending, isError, error, refetch, isRefetching } =
     usePaisesEmisiones();
 
@@ -35,13 +38,14 @@ export default function Inicio() {
     const termino = normalizar(busqueda);
     const filtrados = (data ?? []).filter(
       (pais) =>
+        (!soloFavoritos || esFavorito(pais.codigoIso3)) &&
         (region === null || pais.region === region) &&
         normalizar(pais.nombre).includes(termino),
     );
     if (orden === 'mayor') return filtrados.sort((a, b) => b.valor - a.valor);
     if (orden === 'menor') return filtrados.sort((a, b) => a.valor - b.valor);
     return filtrados;
-  }, [data, busqueda, region, orden]);
+  }, [data, busqueda, region, orden, soloFavoritos, esFavorito]);
 
   if (isPending) {
     return <EstadoCargando mensaje="Cargando datos del Banco Mundial..." />;
@@ -65,6 +69,14 @@ export default function Inicio() {
           onSeleccionar={setRegion}
         />
         <SelectorOrden orden={orden} onCambiar={setOrden} />
+        <Pressable
+          onPress={() => setSoloFavoritos((actual) => !actual)}
+          style={[estilos.botonFavoritos, soloFavoritos && estilos.botonFavoritosActivo]}
+        >
+          <Text style={[estilos.textoFavoritos, soloFavoritos && estilos.textoFavoritosActivo]}>
+            {soloFavoritos ? '★ Mostrando solo favoritos' : '☆ Ver solo favoritos'}
+          </Text>
+        </Pressable>
       </View>
       <FlatList
         data={paisesFiltrados}
@@ -72,6 +84,8 @@ export default function Inicio() {
         renderItem={({ item }) => (
           <PaisCard
             pais={item}
+            esFavorito={esFavorito(item.codigoIso3)}
+            onAlternarFavorito={() => alternarFavorito(item.codigoIso3)}
             onPress={() => router.push(`/pais/${item.codigoIso3}`)}
           />
         )}
@@ -80,7 +94,11 @@ export default function Inicio() {
         onRefresh={refetch}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
-          <Text style={estilos.vacio}>No se encontraron países con ese criterio.</Text>
+          <Text style={estilos.vacio}>
+            {soloFavoritos
+              ? 'Todavía no marcaste países favoritos.'
+              : 'No se encontraron países con ese criterio.'}
+          </Text>
         }
       />
     </View>
@@ -92,6 +110,19 @@ const estilos = StyleSheet.create({
   encabezado: { padding: espaciado.m, paddingBottom: 0 },
   titulo: { fontSize: 22, fontWeight: '700', color: colores.texto },
   subtitulo: { marginTop: espaciado.xs, marginBottom: espaciado.m, color: colores.textoSecundario },
+  botonFavoritos: {
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: colores.borde,
+    backgroundColor: colores.superficie,
+    borderRadius: 16,
+    paddingHorizontal: espaciado.m,
+    paddingVertical: espaciado.s,
+    marginBottom: espaciado.s,
+  },
+  botonFavoritosActivo: { backgroundColor: '#FFF3CC', borderColor: '#E0A100' },
+  textoFavoritos: { fontSize: 13, color: colores.texto },
+  textoFavoritosActivo: { fontWeight: '600' },
   lista: { padding: espaciado.m },
   vacio: { textAlign: 'center', color: colores.textoSecundario, marginTop: espaciado.l },
 });

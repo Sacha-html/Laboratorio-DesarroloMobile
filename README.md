@@ -34,17 +34,17 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 | 5 | Actualizar deslizando | Pull to refresh en el listado (`refetch`). |
 | 6 | Búsqueda por nombre | `BarraBusqueda` filtra el listado sin distinguir mayúsculas ni tildes. |
 | 7 | Filtro por región | `FiltroRegiones` con chips; se combina con la búsqueda. |
+| 8 | Ordenar por emisión | `SelectorOrden`: A-Z, más emisión o menos emisión. |
+| 9 | Favoritos | `BotonFavorito` en el listado y el detalle, filtro "Ver solo favoritos" y persistencia con AsyncStorage. |
 
 ### Pendientes
 
 | # | Feature | Detalle |
 |---|---|---|
-| 1 | Ordenar por emisión | Mayor a menor y viceversa. |
-| 2 | Favoritos | Marcar países y ver solo los favoritos. |
-| 3 | Comparar países | Ver la serie de dos países juntos. |
-| 4 | Gráfico de línea | Reemplazar las barras por un gráfico de evolución. |
-| 5 | Navegación con pestañas | Inicio, favoritos y comparación. |
-| 6 | Pruebas | Tests de servicio, hooks y componentes. |
+| 1 | Comparar países | Ver la serie de dos países juntos. |
+| 2 | Gráfico de línea | Reemplazar las barras por un gráfico de evolución. |
+| 3 | Navegación con pestañas | Inicio, favoritos y comparación. |
+| 4 | Pruebas | Tests de servicio, hooks y componentes. |
 
 ## Tecnologías
 
@@ -53,6 +53,7 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 - TypeScript
 - TanStack Query (`@tanstack/react-query`)
 - expo-image
+- AsyncStorage (`@react-native-async-storage/async-storage`) para guardar los favoritos
 
 ## Estructura del proyecto
 
@@ -62,7 +63,8 @@ src/
 │   ├── _layout.tsx       Layout raíz y QueryClientProvider
 │   ├── index.tsx         Listado de países
 │   └── pais/[codigo].tsx Detalle de un país
-├── components/           Componentes reutilizables (PaisCard, BarraSerie, BarraBusqueda, FiltroRegiones, EstadoConsulta)
+├── components/           Componentes reutilizables (PaisCard, BarraSerie, BarraBusqueda, FiltroRegiones, SelectorOrden, BotonFavorito, EstadoConsulta)
+├── context/              Estado compartido (FavoritosContext)
 ├── hooks/                Hooks de TanStack Query (useEmisiones)
 ├── services/             Llamadas a la API del Banco Mundial
 ├── types/                Tipos de dominio
@@ -83,10 +85,21 @@ Presionar `w` para abrir en el navegador, o escanear el QR con la app Expo Go.
 
 Se trabaja con dos ramas permanentes:
 
-- **`main`**: versión estable y entregable. Solo recibe merges desde `develop` una vez probados.
-- **`develop`**: rama de integración. Todas las funcionalidades se integran acá primero.
+- **`main`**: versión estable y entregable. Está protegida: solo se modifica con la aprobación de los mantenedores.
+- **`develop`**: rama de integración. Es el destino de los Pull Requests de los integrantes del grupo.
 
-Cada funcionalidad se desarrolla en su propia rama creada **desde `develop`**, con commits en español que explican qué se hizo. Se integra a `develop` mediante un Pull Request revisado, con merge que conserva el historial (`--no-ff`). Cuando `develop` está probado, se pasa a `main`.
+**Roles:**
+
+- **Mantenedores** (Germán Cochis, con la asistencia de Claude Code y siempre bajo su validación): dirigen el proyecto, pueden integrar cambios en `main` y aprueban los Pull Requests hacia `main`.
+- **Integrantes del grupo:** trabajan siempre por `develop`. No integran directamente en `main`.
+
+**Flujo:**
+
+1. Los integrantes crean su rama `feature/...` **desde `develop`** y abren un Pull Request hacia `develop`.
+2. Se revisa y prueba en `develop` que todo funcione.
+3. Se abre un Pull Request `develop` → `main`, que solo se integra con la aprobación de los mantenedores.
+
+Los commits van en español y explican qué se hizo. Los merges conservan el historial (`--no-ff`).
 
 **Convención de ramas:** `feature/<descripcion>` para funcionalidades, `fix/<descripcion>` para correcciones y `docs/<descripcion>` para documentación.
 
@@ -96,9 +109,8 @@ Cada funcionalidad se desarrolla en su propia rama creada **desde `develop`**, c
 2. `git checkout -b feature/<descripcion>`
 3. Commits en español, claros y acotados.
 4. `git push -u origin feature/<descripcion>` y abrir un Pull Request hacia `develop`.
-5. Otro integrante revisa y prueba antes de aprobar el merge.
 
-**Historial de ramas** (las primeras cinco se integraron directo a `main` durante el armado de la base, antes de existir `develop`):
+**Historial de ramas** (las primeras seis se integraron directo a `main` durante el armado de la base, antes de existir `develop`):
 
 | Orden | Rama | Contenido |
 |---|---|---|
@@ -108,7 +120,11 @@ Cada funcionalidad se desarrolla en su propia rama creada **desde `develop`**, c
 | 4 | `feature/listado-paises-pais-card` | Componente `PaisCard`, estados de consulta y listado. |
 | 5 | `feature/detalle-pais-serie-historica` | Pantalla de detalle con `ScrollView` y `BarraSerie`. |
 | 6 | `docs/readme-y-trazabilidad` | README inicial. |
-| 7 | `feature/busqueda-y-filtro-por-region` | Búsqueda por nombre y filtro por región (integrada a `develop`). |
+| 7 | `feature/busqueda-y-filtro-por-region` | Búsqueda por nombre y filtro por región. |
+| 8 | `feature/ordenar-por-emision` | Selector de orden: A-Z, más emisión, menos emisión. |
+| 9 | `feature/favoritos` | Favoritos con persistencia en AsyncStorage y filtro de solo favoritos. |
+
+Desde la rama 7 en adelante las funcionalidades pasan por `develop` y luego se promueven a `main`.
 
 Para ver el historial completo con las ramas:
 
