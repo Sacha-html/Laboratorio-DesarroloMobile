@@ -32,19 +32,19 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 | 3 | Consumo de la API con TanStack Query | Hooks `usePaisesEmisiones` y `useSerieHistorica`, con caché de un día y reintentos. |
 | 4 | Estados de carga y error | `EstadoCargando` y `EstadoError` con botón "Reintentar". |
 | 5 | Actualizar deslizando | Pull to refresh en el listado (`refetch`). |
+| 6 | Búsqueda por nombre | `BarraBusqueda` filtra el listado sin distinguir mayúsculas ni tildes. |
+| 7 | Filtro por región | `FiltroRegiones` con chips; se combina con la búsqueda. |
 
 ### Pendientes
 
 | # | Feature | Detalle |
 |---|---|---|
-| 1 | Búsqueda por nombre de país | Filtrar el listado escribiendo el nombre. |
-| 2 | Filtro por región | Latin America & Caribbean, Europe & Central Asia, etc. |
-| 3 | Ordenar por emisión | Mayor a menor y viceversa. |
-| 4 | Favoritos | Marcar países y ver solo los favoritos. |
-| 5 | Comparar países | Ver la serie de dos países juntos. |
-| 6 | Gráfico de línea | Reemplazar las barras por un gráfico de evolución. |
-| 7 | Navegación con pestañas | Inicio, favoritos y comparación. |
-| 8 | Pruebas | Tests de servicio, hooks y componentes. |
+| 1 | Ordenar por emisión | Mayor a menor y viceversa. |
+| 2 | Favoritos | Marcar países y ver solo los favoritos. |
+| 3 | Comparar países | Ver la serie de dos países juntos. |
+| 4 | Gráfico de línea | Reemplazar las barras por un gráfico de evolución. |
+| 5 | Navegación con pestañas | Inicio, favoritos y comparación. |
+| 6 | Pruebas | Tests de servicio, hooks y componentes. |
 
 ## Tecnologías
 
@@ -62,7 +62,7 @@ src/
 │   ├── _layout.tsx       Layout raíz y QueryClientProvider
 │   ├── index.tsx         Listado de países
 │   └── pais/[codigo].tsx Detalle de un país
-├── components/           Componentes reutilizables (PaisCard, BarraSerie, EstadoConsulta)
+├── components/           Componentes reutilizables (PaisCard, BarraSerie, BarraBusqueda, FiltroRegiones, EstadoConsulta)
 ├── hooks/                Hooks de TanStack Query (useEmisiones)
 ├── services/             Llamadas a la API del Banco Mundial
 ├── types/                Tipos de dominio
@@ -81,9 +81,24 @@ Presionar `w` para abrir en el navegador, o escanear el QR con la app Expo Go.
 
 ## Flujo de trabajo y trazabilidad
 
-Cada funcionalidad se desarrolla en su propia rama, con commits en español que explican qué se hizo, y se integra a `main` con un merge que conserva el historial (`--no-ff`).
+Se trabaja con dos ramas permanentes:
 
-**Convención de ramas:** `feature/<descripcion>` para funcionalidades y `docs/<descripcion>` para documentación.
+- **`main`**: versión estable y entregable. Solo recibe merges desde `develop` una vez probados.
+- **`develop`**: rama de integración. Todas las funcionalidades se integran acá primero.
+
+Cada funcionalidad se desarrolla en su propia rama creada **desde `develop`**, con commits en español que explican qué se hizo. Se integra a `develop` mediante un Pull Request revisado, con merge que conserva el historial (`--no-ff`). Cuando `develop` está probado, se pasa a `main`.
+
+**Convención de ramas:** `feature/<descripcion>` para funcionalidades, `fix/<descripcion>` para correcciones y `docs/<descripcion>` para documentación.
+
+**Cómo colaborar:**
+
+1. `git checkout develop && git pull`
+2. `git checkout -b feature/<descripcion>`
+3. Commits en español, claros y acotados.
+4. `git push -u origin feature/<descripcion>` y abrir un Pull Request hacia `develop`.
+5. Otro integrante revisa y prueba antes de aprobar el merge.
+
+**Historial de ramas** (las primeras cinco se integraron directo a `main` durante el armado de la base, antes de existir `develop`):
 
 | Orden | Rama | Contenido |
 |---|---|---|
@@ -92,7 +107,8 @@ Cada funcionalidad se desarrolla en su propia rama, con commits en español que 
 | 3 | `feature/tanstack-query-api-banco-mundial` | TanStack Query, servicio de la API, tipos y hooks. |
 | 4 | `feature/listado-paises-pais-card` | Componente `PaisCard`, estados de consulta y listado. |
 | 5 | `feature/detalle-pais-serie-historica` | Pantalla de detalle con `ScrollView` y `BarraSerie`. |
-| 6 | `docs/readme-y-trazabilidad` | Este README. |
+| 6 | `docs/readme-y-trazabilidad` | README inicial. |
+| 7 | `feature/busqueda-y-filtro-por-region` | Búsqueda por nombre y filtro por región (integrada a `develop`). |
 
 Para ver el historial completo con las ramas:
 
