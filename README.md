@@ -2,8 +2,6 @@
 
 Aplicación móvil desarrollada con **React Native + Expo** bajo la metodología de Aprendizaje Basado en Proyectos (ABP). Consume datos reales de la **API del Banco Mundial** y los gestiona con **TanStack Query**.
 
-> Este es un proyecto independiente y paralelo. No modifica ni depende del proyecto grupal del Recetario Argentino.
-
 ## Descripción
 
 La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cada país, con su último dato disponible, y permite entrar al detalle de un país para ver su evolución histórica año por año.
@@ -15,11 +13,10 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 
 ## Integrantes
 
-| Integrante | Rol |
-|---|---|
-| Germán Cochis | Estructura base, integración con la API y TanStack Query |
-
-> Los demás integrantes se irán sumando a medida que el proyecto avance.
+- Germán Cochis
+- Mariano Decalli
+- Fernando Aparicio
+- Sacha Del Barrio
 
 ## Features
 
@@ -86,19 +83,14 @@ Presionar `w` para abrir en el navegador, o escanear el QR con la app Expo Go.
 
 Se trabaja con dos ramas permanentes:
 
-- **`main`**: versión estable y entregable. Está protegida: solo se modifica con la aprobación de los mantenedores.
-- **`develop`**: rama de integración. Es el destino de los Pull Requests de los integrantes del grupo.
-
-**Roles:**
-
-- **Mantenedores** (Germán Cochis, con la asistencia de Claude Code y siempre bajo su validación): dirigen el proyecto, pueden integrar cambios en `main` y aprueban los Pull Requests hacia `main`.
-- **Integrantes del grupo:** trabajan siempre por `develop`. No integran directamente en `main`.
+- **`main`**: versión estable y entregable. Está protegida: solo se modifica con aprobación.
+- **`develop`**: rama de integración. Es el destino de los Pull Requests del grupo.
 
 **Flujo:**
 
-1. Los integrantes crean su rama `feature/...` **desde `develop`** y abren un Pull Request hacia `develop`.
+1. Cada integrante crea su rama `feature/...` **desde `develop`** y abre un Pull Request hacia `develop`.
 2. Se revisa y prueba en `develop` que todo funcione.
-3. Se abre un Pull Request `develop` → `main`, que solo se integra con la aprobación de los mantenedores.
+3. Se abre un Pull Request `develop` → `main`, que se integra con la aprobación de Germán Cochis.
 
 Los commits van en español y explican qué se hizo. Los merges conservan el historial (`--no-ff`).
 
@@ -111,7 +103,7 @@ Los commits van en español y explican qué se hizo. Los merges conservan el his
 3. Commits en español, claros y acotados.
 4. `git push -u origin feature/<descripcion>` y abrir un Pull Request hacia `develop`.
 
-**Historial de ramas** (las primeras seis se integraron directo a `main` durante el armado de la base, antes de existir `develop`):
+**Historial de ramas:**
 
 | Orden | Rama | Contenido |
 |---|---|---|
@@ -125,8 +117,7 @@ Los commits van en español y explican qué se hizo. Los merges conservan el his
 | 8 | `feature/ordenar-por-emision` | Selector de orden: A-Z, más emisión, menos emisión. |
 | 9 | `feature/favoritos` | Favoritos con persistencia en AsyncStorage y filtro de solo favoritos. |
 | 10 | `feature/despliegue-vercel` | Configuración de Vercel (`vercel.json`) para publicar la versión web. |
-
-Desde la rama 7 en adelante las funcionalidades pasan por `develop` y luego se promueven a `main`.
+| 11 | `docs/actualizar-readme-integrantes` | Integrantes del grupo y ajustes del README. |
 
 Para ver el historial completo con las ramas:
 
