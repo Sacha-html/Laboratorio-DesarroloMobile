@@ -81,27 +81,24 @@ Presionar `w` para abrir en el navegador, o escanear el QR con la app Expo Go.
 
 ## Flujo de trabajo y trazabilidad
 
-Se trabaja con dos ramas permanentes:
-
-- **`main`**: versión estable y entregable. Está protegida: solo se modifica con aprobación.
-- **`develop`**: rama de integración. Es el destino de los Pull Requests del grupo.
+La rama principal es `main` y está conectada con Vercel: cada vez que se integra un cambio en `main`, la app web se vuelve a publicar en https://app-movil-co-2.vercel.app.
 
 **Flujo:**
 
-1. Cada integrante crea su rama `feature/...` **desde `develop`** y abre un Pull Request hacia `develop`.
-2. Se revisa y prueba en `develop` que todo funcione.
-3. Se abre un Pull Request `develop` → `main`, que se integra con la aprobación de Germán Cochis.
+1. Cada integrante crea su rama `feature/...` desde `main`.
+2. Sube su rama y abre un Pull Request hacia `main`.
+3. Se integra el Pull Request y Vercel publica los cambios automáticamente.
 
-Los commits van en español y explican qué se hizo. Los merges conservan el historial (`--no-ff`).
+Los commits van en español y explican qué se hizo. Los merges conservan el historial.
 
 **Convención de ramas:** `feature/<descripcion>` para funcionalidades, `fix/<descripcion>` para correcciones y `docs/<descripcion>` para documentación.
 
 **Cómo colaborar:**
 
-1. `git checkout develop && git pull`
+1. `git checkout main && git pull`
 2. `git checkout -b feature/<descripcion>`
 3. Commits en español, claros y acotados.
-4. `git push -u origin feature/<descripcion>` y abrir un Pull Request hacia `develop`.
+4. `git push -u origin feature/<descripcion>` y abrir un Pull Request hacia `main`.
 
 **Historial de ramas:**
 
@@ -118,6 +115,7 @@ Los commits van en español y explican qué se hizo. Los merges conservan el his
 | 9 | `feature/favoritos` | Favoritos con persistencia en AsyncStorage y filtro de solo favoritos. |
 | 10 | `feature/despliegue-vercel` | Configuración de Vercel (`vercel.json`) para publicar la versión web. |
 | 11 | `docs/actualizar-readme-integrantes` | Integrantes del grupo y ajustes del README. |
+| 12 | `docs/simplificar-flujo-a-main` | Flujo de trabajo simplificado: todo se integra directo en `main`. |
 
 Para ver el historial completo con las ramas:
 
