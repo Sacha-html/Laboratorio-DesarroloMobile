@@ -1,21 +1,28 @@
-import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 
-import { RecetasProvider } from '@/context/recetas-context';
+import { colores } from '@/constants/tema';
+import { FavoritosProvider } from '@/context/FavoritosContext';
 
-export default function RootLayout() {
+const clienteConsultas = new QueryClient({
+  defaultOptions: { queries: { retry: 2 } },
+});
+
+export default function LayoutRaiz() {
   return (
-    // El provider se monta una vez para que todas las rutas compartan el catálogo de esta sesión.
-    <RecetasProvider>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          // Cada pantalla diseña su propio encabezado dentro del contenido.
-          headerShown: false,
-          contentStyle: { backgroundColor: '#F8F9FA' },
-        }}
-      />
-    </RecetasProvider>
+    <QueryClientProvider client={clienteConsultas}>
+      <FavoritosProvider>
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: colores.primario },
+            headerTintColor: '#FFFFFF',
+            contentStyle: { backgroundColor: colores.fondo },
+          }}
+        >
+          <Stack.Screen name="index" options={{ title: 'Emisiones de CO2' }} />
+          <Stack.Screen name="pais/[codigo]" options={{ title: 'Detalle del país' }} />
+        </Stack>
+      </FavoritosProvider>
+    </QueryClientProvider>
   );
 }
