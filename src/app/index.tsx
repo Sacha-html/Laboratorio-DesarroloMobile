@@ -8,7 +8,7 @@ import { FiltroRegiones } from '@/components/FiltroRegiones';
 import { PaisCard } from '@/components/PaisCard';
 import { type Orden, SelectorOrden } from '@/components/SelectorOrden';
 import { colores, espaciado } from '@/constants/tema';
-import { useFavoritos } from '@/context/FavoritosContext';
+import { useFavoritosStore } from '@/store/useFavoritosStore';
 import { usePaisesEmisiones } from '@/hooks/useEmisiones';
 
 function normalizar(texto: string): string {
@@ -25,7 +25,7 @@ export default function Inicio() {
   const [region, setRegion] = useState<string | null>(null);
   const [orden, setOrden] = useState<Orden>('nombre');
   const [soloFavoritos, setSoloFavoritos] = useState(false);
-  const { esFavorito, alternarFavorito } = useFavoritos();
+  const { favoritos, esFavorito, alternarFavorito } = useFavoritosStore();
   const { data, isPending, isError, error, refetch, isRefetching } =
     usePaisesEmisiones();
 
@@ -45,7 +45,7 @@ export default function Inicio() {
     if (orden === 'mayor') return filtrados.sort((a, b) => b.valor - a.valor);
     if (orden === 'menor') return filtrados.sort((a, b) => a.valor - b.valor);
     return filtrados;
-  }, [data, busqueda, region, orden, soloFavoritos, esFavorito]);
+  }, [data, busqueda, region, orden, soloFavoritos, favoritos, esFavorito]);
 
   if (isPending) {
     return <EstadoCargando mensaje="Cargando datos del Banco Mundial..." />;

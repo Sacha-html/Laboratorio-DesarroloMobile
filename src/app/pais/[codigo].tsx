@@ -6,7 +6,7 @@ import { BarraSerie } from '@/components/BarraSerie';
 import { BotonFavorito } from '@/components/BotonFavorito';
 import { EstadoCargando, EstadoError } from '@/components/EstadoConsulta';
 import { colores, espaciado } from '@/constants/tema';
-import { useFavoritos } from '@/context/FavoritosContext';
+import { useFavoritosStore } from '@/store/useFavoritosStore';
 import { usePaisesEmisiones, useSerieHistorica } from '@/hooks/useEmisiones';
 import { formatearToneladas, urlBandera } from '@/utils/formato';
 
@@ -14,7 +14,7 @@ export default function DetallePais() {
   const { codigo } = useLocalSearchParams<{ codigo: string }>();
   const paises = usePaisesEmisiones();
   const serie = useSerieHistorica(codigo);
-  const { esFavorito, alternarFavorito } = useFavoritos();
+  const { favoritos, esFavorito, alternarFavorito } = useFavoritosStore();
 
   const pais = paises.data?.find((item) => item.codigoIso3 === codigo);
 

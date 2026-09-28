@@ -32,7 +32,7 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 | 6 | Búsqueda por nombre | `BarraBusqueda` filtra el listado sin distinguir mayúsculas ni tildes. |
 | 7 | Filtro por región | `FiltroRegiones` con chips; se combina con la búsqueda. |
 | 8 | Ordenar por emisión | `SelectorOrden`: A-Z, más emisión o menos emisión. |
-| 9 | Favoritos | `BotonFavorito` en el listado y el detalle, filtro "Ver solo favoritos" y persistencia con AsyncStorage. |
+| 9 | Favoritos | `BotonFavorito` en el listado y el detalle, filtro "Ver solo favoritos" y gestión de estado global con Zustand + persistencia en AsyncStorage. |
 | 10 | Despliegue web en Vercel | `vercel.json` con el build de Expo para web: https://app-movil-co-2.vercel.app |
 
 ### Pendientes
@@ -50,6 +50,7 @@ La app muestra las emisiones de CO2 per cápita (toneladas por habitante) de cad
 - Expo Router (navegación basada en archivos)
 - TypeScript
 - TanStack Query (`@tanstack/react-query`)
+- Zustand (`zustand`) para la gestión del estado global y persistencia
 - expo-image
 - AsyncStorage (`@react-native-async-storage/async-storage`) para guardar los favoritos
 
@@ -62,9 +63,9 @@ src/
 │   ├── index.tsx         Listado de países
 │   └── pais/[codigo].tsx Detalle de un país
 ├── components/           Componentes reutilizables (PaisCard, BarraSerie, BarraBusqueda, FiltroRegiones, SelectorOrden, BotonFavorito, EstadoConsulta)
-├── context/              Estado compartido (FavoritosContext)
 ├── hooks/                Hooks de TanStack Query (useEmisiones)
 ├── services/             Llamadas a la API del Banco Mundial
+├── store/                Estado global con Zustand (useFavoritosStore)
 ├── types/                Tipos de dominio
 ├── constants/            Tema de colores y espaciado
 └── utils/                Formato de números y URL de banderas
@@ -116,6 +117,7 @@ Los commits van en español y explican qué se hizo. Los merges conservan el his
 | 10 | `feature/despliegue-vercel` | Configuración de Vercel (`vercel.json`) para publicar la versión web. |
 | 11 | `docs/actualizar-readme-integrantes` | Integrantes del grupo y ajustes del README. |
 | 12 | `docs/simplificar-flujo-a-main` | Flujo de trabajo simplificado: todo se integra directo en `main`. |
+| 13 | `feature/migracion-zustand-favoritos` | Migración de React Context a Zustand con middleware persist, simplificando la arquitectura y eliminando código repetitivo. |
 
 Para ver el historial completo con las ramas:
 
